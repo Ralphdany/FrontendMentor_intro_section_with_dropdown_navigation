@@ -11,42 +11,51 @@
       sizes="32x32"
       href="./images/favicon-32x32.png"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./style.css" />
 
     <title>Frontend Mentor | Intro section with dropdown navigation</title>
   </head>
   <body>
     <header>
+      <a href="#"><img src="./images/logo.svg" alt="logo" class="logo" /></a>
+
       <nav>
-        <a href="#"><img src="./images/logo.svg" alt="logo" class="logo" /></a>
-        <ul class="nav-links">
+        <ul class="nav-list">
           <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Company</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Careers</a></li>
           <li class="nav-item"><a href="#" class="nav-link">About</a></li>
         </ul>
-        <button class="mobile-menu-toggle-button">
-          <img src="./images/icon-menu.svg" alt="" />
-        </button>
-        <div>
-          <button>Login</button>
-          <button>Register</button>
-        </div>
       </nav>
+      <button class="mobile-menu-toggle-button">
+        <img src="./images/icon-menu.svg" alt="" />
+      </button>
+      <div class="cta-container">
+        <button class="btn-link">Login</button>
+        <button class="btn btn-outline">Register</button>
+      </div>
     </header>
     <main>
       <div class="wrapper">
         <section class="intro">
           <section class="intro-content">
-            <h1>Make remote work</h1>
-            <p>
-              Get your team in sync, no matter your location. Streamline
-              processes, create team rituals, and watch productivity soar.
-            </p>
-            <button>Learn more</button>
+            <div>
+              <h1>Make <br />remote work</h1>
+              <p class="intro-description">
+                Get your team in sync, no matter your location. Streamline
+                processes, create team rituals, and watch productivity soar.
+              </p>
+              <button class="btn btn-primary">Learn more</button>
+            </div>
             <ul>
               <li><img src="./images/client-databiz.svg" alt="" /></li>
-              <li><img src="./images/client-databiz.svg" alt="" /></li>
+              <li><img src="./images/client-audiophile.svg" alt="" /></li>
               <li><img src="./images/client-meet.svg" alt="" /></li>
               <li><img src="./images/client-maker.svg" alt="" /></li>
             </ul>
@@ -75,10 +84,10 @@
 
         
         -->
-    <footer class="attribution">
+    <!-- <footer class="attribution">
       Challenge by
       <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>.
       Coded by <a href="#">Your Name Here</a>.
-    </footer>
+    </footer> -->
   </body>
 </html>
