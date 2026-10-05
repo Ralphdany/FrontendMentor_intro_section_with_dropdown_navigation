@@ -4,6 +4,9 @@ const mobileMenuOpenBtn = document.querySelector("#nav-open-btn");
 const mobileMenuCloseBtn = document.querySelector("#close-btn");
 const dropdownItems = document.querySelectorAll(".dropdown-item");
 
+const focusableNavNodes = navigationBar.querySelectorAll("button, a[href]");
+const isMobile = window.matchMedia("(max-width: 768px)");
+
 function activateDropdown(dropdownItem) {
   const trigger = dropdownItem.firstElementChild;
   const dropdown = dropdownItem.lastElementChild;
@@ -49,23 +52,18 @@ function closeDropdownMenu(button, submenu) {
 
 function openMobileMenu() {
   navigationContainer.classList.add("show-backdrop");
-  navigationContainer.classList.remove("hide-backdrop");
   document.body.classList.add("lock-scroll");
-  document.body.classList.remove("unlock-scroll");
   mobileMenuOpenBtn.setAttribute("aria-expanded", "true");
   mobileMenuCloseBtn.focus();
 }
 
 function closeMobileMenu() {
   const activeDropdown = getActiveDropdown();
-
-  navigationContainer.classList.add("hide-backdrop");
   navigationContainer.classList.remove("show-backdrop");
-  document.body.classList.add("unlock-scroll");
   document.body.classList.remove("lock-scroll");
   mobileMenuOpenBtn.setAttribute("aria-expanded", "false");
   if (activeDropdown) activateDropdown(activeDropdown);
-  mobileMenuOpenBtn.focus();
+  if (isMobile.matches) mobileMenuOpenBtn.focus();
 }
 
 dropdownItems.forEach((element) => {
@@ -136,4 +134,9 @@ navigationBar.addEventListener("keydown", (event) => {
 navigationContainer.addEventListener("pointerdown", (event) => {
   if (!(event.target === navigationContainer)) return;
   closeMobileMenu();
+});
+
+isMobile.addEventListener("change", (event) => {
+  if (!event.matches && navigationContainer.classList.contains("show-backdrop"))
+    closeMobileMenu();
 });

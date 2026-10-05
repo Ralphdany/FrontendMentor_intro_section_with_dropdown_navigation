@@ -90,21 +90,15 @@ nav {
     background-color: rgba(0, 0, 0, 0.205);
     z-index: 10;
   }
-  .hide-backdrop {
-    display: none;
-  }
 }
 
 .show-backdrop {
   display: flex;
-  overscroll-behavior: contain;
 }
 .lock-scroll {
   overflow: hidden;
 }
-.unlock-scroll {
-  overflow: auto;
-}
+
 .show-nav {
   transform: translateX(0%);
 }
