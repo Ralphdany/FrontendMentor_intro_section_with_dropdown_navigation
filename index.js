@@ -1,9 +1,37 @@
-const dropdownButtons = document.getElementsByClassName("dropdown-btn");
-const submenuOne = document.querySelector("#submenu-one");
-const dropdownItemOne = document.querySelector("#dropdown-item1");
-const dropdownItemTwo = document.querySelector("#dropdown-item2");
-const submenuTwo = document.querySelector("#submenu-two");
 const navigationBar = document.querySelector("#navigation");
+const navigationContainer = document.querySelector("#nav-container");
+const mobileMenuOpenBtn = document.querySelector("#nav-open-btn");
+const mobileMenuCloseBtn = document.querySelector("#close-btn");
+const dropdownItems = document.querySelectorAll(".dropdown-item");
+
+function activateDropdown(dropdownItem) {
+  const trigger = dropdownItem.firstElementChild;
+  const dropdown = dropdownItem.lastElementChild;
+  const activeDropdownItem = getActiveDropdown();
+
+  if (activeDropdownItem === undefined) {
+    openDropdownMenu(trigger, dropdown);
+    return;
+  } else if (dropdownItem === activeDropdownItem) {
+    closeDropdownMenu(trigger, dropdown);
+    return;
+  } else {
+    closeDropdownMenu(
+      activeDropdownItem.firstElementChild,
+      activeDropdownItem.lastElementChild,
+    );
+    openDropdownMenu(trigger, dropdown);
+    return;
+  }
+}
+
+function getActiveDropdown() {
+  const allDropdownItems = Array.from(dropdownItems);
+  return allDropdownItems.find(
+    (element) =>
+      element.firstElementChild.getAttribute("aria-expanded") === "true",
+  );
+}
 
 function openDropdownMenu(button, submenu) {
   const icon = button.lastElementChild;
@@ -19,52 +47,93 @@ function closeDropdownMenu(button, submenu) {
   icon.style.transform = "rotate(0deg)";
 }
 
-function toggleDropdownMenu(button, submenu) {
-  const isExpanded = button.getAttribute("aria-expanded") === "true";
-  if (isExpanded) {
-    closeDropdownMenu(button, submenu);
-  } else {
-    openDropdownMenu(button, submenu);
-  }
+function openMobileMenu() {
+  navigationContainer.classList.add("show-backdrop");
+  navigationContainer.classList.remove("hide-backdrop");
+  document.body.classList.add("lock-scroll");
+  document.body.classList.remove("unlock-scroll");
+  mobileMenuOpenBtn.setAttribute("aria-expanded", "true");
+  mobileMenuCloseBtn.focus();
 }
 
-const buttonOne = dropdownButtons[0];
-const buttonTwo = dropdownButtons[1];
+function closeMobileMenu() {
+  const activeDropdown = getActiveDropdown();
 
-buttonOne.addEventListener("click", () => {
-  toggleDropdownMenu(buttonOne, submenuOne);
+  navigationContainer.classList.add("hide-backdrop");
+  navigationContainer.classList.remove("show-backdrop");
+  document.body.classList.add("unlock-scroll");
+  document.body.classList.remove("lock-scroll");
+  mobileMenuOpenBtn.setAttribute("aria-expanded", "false");
+  if (activeDropdown) activateDropdown(activeDropdown);
+  mobileMenuOpenBtn.focus();
+}
+
+dropdownItems.forEach((element) => {
+  element.firstElementChild.addEventListener("click", () => {
+    activateDropdown(element);
+  });
+  element.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      closeDropdownMenu(element.firstElementChild, element.lastElementChild);
+      element.firstElementChild.focus();
+    }
+  });
+});
+navigationBar.addEventListener("focusout", (event) => {
+  const activeDropdown = getActiveDropdown();
+  if (
+    !navigationBar.contains(event.relatedTarget) &&
+    activeDropdown !== undefined
+  ) {
+    closeDropdownMenu(
+      activeDropdown.firstElementChild,
+      activeDropdown.lastElementChild,
+    );
+  }
 });
 
-dropdownItemOne.addEventListener("keydown", (event) => {
+mobileMenuOpenBtn.addEventListener("click", () => {
+  openMobileMenu();
+});
+mobileMenuCloseBtn.addEventListener("click", () => {
+  closeMobileMenu();
+});
+navigationBar.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    if (buttonOne.getAttribute("aria-expanded") === "false") return;
-    closeDropdownMenu(buttonOne, submenuOne);
-    buttonOne.focus();
+    closeMobileMenu();
   }
 });
-
-buttonTwo.addEventListener("click", () => {
-  toggleDropdownMenu(buttonTwo, submenuTwo);
-});
-
-dropdownItemTwo.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    if (buttonTwo.getAttribute("aria-expanded") === "false") return;
-    closeDropdownMenu(buttonTwo, submenuTwo);
-    buttonTwo.focus();
+navigationBar.addEventListener("keydown", (event) => {
+  const mobileMenuOpen =
+    navigationContainer.classList.contains("show-backdrop");
+  const focusableNavItems = Array.from(focusableNavNodes).filter((element) => {
+    return !element.closest("[hidden]");
+  });
+  const firstItem = focusableNavItems[0];
+  const lastItem = focusableNavItems[focusableNavItems.length - 1];
+  if (
+    event.key === "Tab" &&
+    document.activeElement === lastItem &&
+    !event.shiftKey &&
+    mobileMenuOpen
+  ) {
+    event.preventDefault();
+    firstItem.focus();
+    return;
+  }
+  if (
+    event.shiftKey &&
+    event.key === "Tab" &&
+    document.activeElement === firstItem &&
+    mobileMenuOpen
+  ) {
+    event.preventDefault();
+    lastItem.focus();
+    return;
   }
 });
-
-dropdownItemOne.addEventListener("focusout", (event) => {
-  if (submenuOne.hidden) return;
-  if (!dropdownItemOne.contains(event.relatedTarget)) {
-    closeDropdownMenu(buttonOne, submenuOne);
-  }
-});
-
-dropdownItemTwo.addEventListener("focusout", (event) => {
-  if (submenuTwo.hidden) return;
-  if (!dropdownItemTwo.contains(event.relatedTarget)) {
-    closeDropdownMenu(buttonTwo, submenuTwo);
-  }
+navigationContainer.addEventListener("pointerdown", (event) => {
+  if (!(event.target === navigationContainer)) return;
+  closeMobileMenu();
 });
