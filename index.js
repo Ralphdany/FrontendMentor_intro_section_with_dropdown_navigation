@@ -52,6 +52,8 @@ function closeDropdownMenu(button, submenu) {
 
 function openMobileMenu() {
   navigationContainer.classList.add("show-backdrop");
+  navigationContainer.classList.add("allow-transition");
+  navigationBar.classList.add("show-nav");
   document.body.classList.add("lock-scroll");
   mobileMenuOpenBtn.setAttribute("aria-expanded", "true");
   mobileMenuCloseBtn.focus();
@@ -59,6 +61,7 @@ function openMobileMenu() {
 
 function closeMobileMenu() {
   const activeDropdown = getActiveDropdown();
+  navigationBar.classList.remove("show-nav");
   navigationContainer.classList.remove("show-backdrop");
   document.body.classList.remove("lock-scroll");
   mobileMenuOpenBtn.setAttribute("aria-expanded", "false");
@@ -71,7 +74,10 @@ dropdownItems.forEach((element) => {
     activateDropdown(element);
   });
   element.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
+    if (
+      event.key === "Escape" &&
+      element.firstElementChild.getAttribute("aria-expanded") === "true"
+    ) {
       event.stopPropagation();
       closeDropdownMenu(element.firstElementChild, element.lastElementChild);
       element.firstElementChild.focus();
@@ -137,6 +143,16 @@ navigationContainer.addEventListener("pointerdown", (event) => {
 });
 
 isMobile.addEventListener("change", (event) => {
-  if (!event.matches && navigationContainer.classList.contains("show-backdrop"))
+  if (
+    !event.matches &&
+    navigationContainer.classList.contains("show-backdrop")
+  ) {
     closeMobileMenu();
+    navigationContainer.classList.remove("allow-transition");
+    return;
+  }
+  if (!event.matches) {
+    navigationContainer.classList.remove("allow-transition");
+    return;
+  }
 });

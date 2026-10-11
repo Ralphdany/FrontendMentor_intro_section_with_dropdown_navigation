@@ -66,6 +66,8 @@ nav {
     background-color: white;
     flex-direction: column;
     justify-content: stretch;
+    transform: translateX(100%);
+    /* transition: transform 300ms; */
     gap: var(--space-lg);
     align-self: flex-end;
     min-height: 100svh;
@@ -79,13 +81,14 @@ nav {
   display: flex;
   flex: 1;
   @media (max-width: 768px) {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    overflow-x: clip;
     flex-direction: column;
     position: fixed;
     /* pointer-events: none; */
     inset: 0;
-    /* transform: translateX(100%);
-    transition: transform 300ms; */
+    /* transition: visibility 300ms; */
     backdrop-filter: blur(0.25rem);
     background-color: rgba(0, 0, 0, 0.205);
     z-index: 10;
@@ -93,17 +96,32 @@ nav {
 }
 
 .show-backdrop {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
+  transition: visibility 0ms;
 }
+@media (max-width: 768px) {
+  .allow-transition {
+    transition:
+      opacity 300ms,
+      visibility 300ms;
+    nav {
+      transition: transform 300ms;
+    }
+  }
+  .allow-transition.show-backdrop {
+    transition:
+      opacity 300ms,
+      visibility 0ms;
+  }
+}
+
 .lock-scroll {
   overflow: hidden;
 }
 
 .show-nav {
   transform: translateX(0%);
-}
-.hide-nav {
-  transform: translateX(100%);
 }
 
 .nav-list {
